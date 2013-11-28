@@ -7,13 +7,18 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
  
 public class CustomizedListView extends Activity {
     // All static variables
@@ -25,10 +30,13 @@ public class CustomizedListView extends Activity {
     static final String KEY_ARTIST = "sizewidth";
     static final String KEY_DURATION = "sizeheight";
     static final String KEY_THUMB_URL = "thumbnail";
+    static final String KEY_LINK_URL = "link";
+    
  
     ListView list;
     LazyAdapter adapter;
     EditText editText;
+    ArrayList<HashMap<String, String>> songsList;
  
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,7 +61,7 @@ public class CustomizedListView extends Activity {
     }
 
 	public void fillList() {
-		ArrayList<HashMap<String, String>> songsList = new ArrayList<HashMap<String, String>>();
+		songsList = new ArrayList<HashMap<String, String>>();
  
         XMLParser parser = new XMLParser();
         
@@ -72,7 +80,8 @@ public class CustomizedListView extends Activity {
             map.put(KEY_ARTIST, parser.getValue(e, KEY_ARTIST));
             map.put(KEY_DURATION, parser.getValue(e, KEY_DURATION));
             map.put(KEY_THUMB_URL, parser.getValue(e, KEY_THUMB_URL));
- 
+            map.put(KEY_LINK_URL, parser.getValue(e, KEY_LINK_URL));
+            
             // adding HashList to ArrayList
             songsList.add(map);
         }
@@ -89,8 +98,28 @@ public class CustomizedListView extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
+            	
+//         	   Log.println(position, "Test", "exception " + position);
+//         	   Toast.makeText(CustomizedListView.this,"" +  position, 0).show();
+//               setContentView(R.layout.image_item);
+//
+//         	   
+//         	  ImageView image=(ImageView)findViewById(R.id.image_item);
+//         	  image.setImageResource(R.drawable.ic_launcher);
+//         	  
+////         	  image.setImageURI(Uri.parse("http://dbscthumb.phinf.naver.net/2315_000_2/20110926125447709_SYNZP5FFA.jpg/n448.jpg?type=m4500_4500_fst"));
  
+                HashMap<String, String> map = songsList.get(position);
+                             Intent intent = new Intent(getApplicationContext(), ImageItemView.class);
+                             intent.putExtra(KEY_TITLE, map.get(KEY_TITLE));
+                             intent.putExtra(KEY_LINK_URL, map.get(KEY_LINK_URL));
+//                             intent.putExtra(KEY_THUMB_URL, map.get(KEY_THUMB_URL));
+                             
+                             
+                            startActivity(intent);
+            	
             }
         });
 	}
+	
 }
